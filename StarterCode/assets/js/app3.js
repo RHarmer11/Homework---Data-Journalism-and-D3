@@ -55,6 +55,24 @@ function renderCircles(circlesGroup, newXScale, chosenXaxis) {
 
   return circlesGroup;
 }
+//function to update state abbr's
+// function updateStateText(chartGroup, newXScale, chosenXaxis) {
+
+//   chartGroup.transition()
+//     .duration(1000)
+//     .attr("x", d => newXScale(d[chosenXAxis]));
+
+//   return chartGroup;
+// }
+function UpdateStateAbbr() {
+    d3.selectAll(".stateabbr")
+      .transition()
+      .duration(1000)
+      .attr("x", d => newXScale(d[chosenXAxis]));
+    return chartGroup;
+  }
+
+
 // function used for updating circles group with new tooltip
 function updateToolTip(chosenXAxis, circlesGroup) {
 
@@ -83,11 +101,12 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 
 return circlesGroup;//how it redraws the circles
 }
+
 // Import Data
-// d3.csv("../data/data.csv", function(err, popData) {
-    // if (err) throw err;
-d3.csv("../data/data.csv")
-    .then(function(popData) {
+d3.csv("../data/data.csv", function(err, popData) {
+    if (err) throw err;
+// d3.csv("../data/data.csv")
+//     .then(function(popData) {
 
     // Parse Data/Cast as numbers
     // ==============================
@@ -107,17 +126,8 @@ d3.csv("../data/data.csv")
   // Create initial axis functions
   var bottomAxis = d3.axisBottom(xLinearScale);
   var leftAxis = d3.axisLeft(yLinearScale);
-
-        // append x axis
-        var xAxis = chartGroup.append("g")
-            .classed("x-axis", true)
-            .attr("transform", `translate(0, ${height})`)
-            .call(bottomAxis);
-
-        // append y axis
-        chartGroup.append("g")
-            .call(leftAxis);
-
+     
+  
 
     // Create Circles, Center x, xenter y and radius
     // ==============================
@@ -136,19 +146,24 @@ d3.csv("../data/data.csv")
         .data(popData)
         .enter()
         .append("text")
-        .attr("cx", d => xLinearScale(d[chosenXAxis]))
-        .attr("cy", d => yLinearScale(d.age))
-        .text(d => d.abbr);
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .attr("x", d => xLinearScale(d[chosenXAxis]))
+        .attr("y", d => yLinearScale(d.age))
+        .attr("class","stateabbr")
+        .text(d => {
+          return d.abbr;
+        });
 
         // append x axis
-    // var xAxis = chartGroup.append("g")
-    //     .classed("x-axis", true)
-    //     .attr("transform", `translate(0, ${height})`)
-    //     .call(bottomAxis);
+    var xAxis = chartGroup.append("g")
+        .classed("x-axis", true)
+        .attr("transform", `translate(0, ${height})`)
+        .call(bottomAxis);
 
         // append y axis
-    // chartGroup.append("g")
-    //     .call(leftAxis);
+    chartGroup.append("g")
+        .call(leftAxis);
 
 
 
@@ -180,6 +195,7 @@ d3.csv("../data/data.csv")
         // updateToolTip function above csv import
     var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
+  
     //Below - labels group is label assoc w x axis
 
     // x axis labels event listener
@@ -204,8 +220,13 @@ d3.csv("../data/data.csv")
           // updates circles with new x values
           circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
 
+
           // updates tooltips with new info
           circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+
+          
+
+          
           // changes classes to change bold text
           if (chosenXAxis === "smokes") {
             smokesLabel
@@ -227,5 +248,13 @@ d3.csv("../data/data.csv")
     });
     
 });
+
+// function UpdateStateAbbr() {
+//   d3.selectAll(".stateabbr")
+//     .transition()
+//     .duration(1000)
+//     .attr("x", d => newXScale(d[chosenXAxis]));
+//   return chartGroup;
+// }
 // g tag inside 
 //* <text x="50" y="50">NC</text> *//
